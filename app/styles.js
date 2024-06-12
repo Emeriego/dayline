@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -26,75 +27,65 @@ export const styles = StyleSheet.create({
     marginHorizontal: 16,
     height: 40,
     padding: 8,
-    backgroundColor: "white",
-    color: "blue",
+    backgroundColor: "#FFA044",
+    color: "black",
     borderRadius: 8,
-    borderColor: "blue",
     borderWidth: 1,
     elevation: 2,
+    width: "90%",
   },
   itemContainer: {
-    flex: 1,
-    flexDirection: "column",
     width: "100%",
-    minWidth: "100%",
     borderRadius: 8,
-    gap: 8,
     borderColor: "black",
-    backgroundColor: "orange",
-    
-
+    backgroundColor: "#FFA044",
+    padding: 8,
+    marginHorizontal: 8,
+    alignSelf: "center",
+    flexDirection: "column",
   },
   listContainer: {
-    // flexGrow: 1,
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
     width: "100%",
-    gap: 22,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    backgroundColor: "red",
     alignSelf: "center",
-
-   
-
+    padding: 16,
+    gap: 16,
   },
   itemDesc: {
-flex: 1,
     padding: 10,
     fontSize: 18,
-    fontSize: 18,
-    height: 44,
-
-    width: '90%',
-
+    width: '100%',
+    height: "auto",
+    backgroundColor: "#FFEFD5",
+    justifyContent: 'center',
   },
-  
   itemTitle: {
+    // display: "flex",
     flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
     fontSize: 18,
-    height: 44,
-    borderRadius: 8,
+    height: 40,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+
     width: '100%',
     padding: 10,
+    backgroundColor: "transparent",
+    // backgroundColor: "#FFDAB9 #FFA07A #FFEFD5 #FFE4B5",
   },
-
   list: {
     width: "100%",
-    backgroundColor: "black",
-    marginVertical: 22,
-    marginHorizontal: 16,
-  alignContent: "center",
+    flex: 1,
+    alignSelf: "center",
   },
   completedItem: {
     backgroundColor: "green",
   },
   pending: {
     // backgroundColor: "gray",
-
   },
   completedText: {
     textDecorationLine: "line-through",
@@ -107,7 +98,7 @@ flex: 1,
   },
   modalView: {
     width: '90%',
-    height: '70%',
+    height: 'auto',
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 20,
@@ -176,4 +167,41 @@ flex: 1,
     alignItems: "center",
     alignSelf: "center",
   },
+  horizontalLine: {
+    width: '100%',
+    borderBottomColor: '#EFE4BE',
+    borderBottomWidth: 1,
+    marginVertical: 10,
+
+  },
+  itemIcons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: 1,
+    backgroundColor: "transparent",
+    color: "black",
+  },
+  notCompleted: {
+    fontSize: 18,
+    color: 'blue',
+    textAlign: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnText: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  editContainer: {
+    width: "60px",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+
 });
