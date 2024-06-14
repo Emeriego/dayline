@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { styles } from "./styles";
 import { ColorPicker } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
@@ -43,7 +44,7 @@ const App: React.FC = () => {
   const [selectedItem, setSelectedItem] = React.useState<TodoItemType | null>(null);
 
 
-useEffect(() => {
+  useEffect(() => {
     loadTodos();
   }, []);
 
@@ -88,7 +89,7 @@ useEffect(() => {
       updatedItems[items.indexOf(itemToEdit)] = { id: id, title: text, description: desc, completed: itemToEdit.completed, priority: priorityLevel },
 
         setItems(updatedItems);
-        saveTodos(updatedItems);
+      saveTodos(updatedItems);
     }
     setModalVisible(false);
     setEditing(false);
@@ -118,7 +119,7 @@ useEffect(() => {
       setText(selectedItem.title)
       setDesc(selectedItem.description)
       setPriorityLevel(selectedItem.priority)
-    } 
+    }
   }
 
 
@@ -136,10 +137,10 @@ useEffect(() => {
     //     ]
     // );
 
-        const newTodos = items.filter(item => item.id !== id);
-        setItems(newTodos);
-        saveTodos(newTodos);
-}
+    const newTodos = items.filter(item => item.id !== id);
+    setItems(newTodos);
+    saveTodos(newTodos);
+  }
   useEffect(() => {
     if (editing && selectedItem) {
       editingItem(selectedItem.id);
@@ -148,12 +149,17 @@ useEffect(() => {
     , [selectedItem]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} className="bg-blue-200">
       <StatusBar style="auto" />
       <Modal visible={modalVisible} transparent={true} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.centeredView}>
+
           <View style={styles.modalView}>
-            <View style={styles.colorPickerContainer}>
+            <View style={styles.topWrap}>
+              <Text >Create a todo</Text>
+              <Pressable style={{cursor: "pointer"}} onPress={()=>setModalVisible(false)} >
+                <AntDesign name="close" size={18} color="red" />
+              </Pressable>
             </View>
             <TextInput style={styles.textInput} onChangeText={setText} value={text} placeholder={"Enter To do title"} />
             <TextInput
@@ -188,7 +194,7 @@ useEffect(() => {
       <FlatList
         style={styles.list}
         data={items}
-        renderItem={({ item }) => <TodoItem item={item} onPress={() => markComplete(item.id)} setEditing={setEditing} setModalVisible={setModalVisible} setSelectedItem={setSelectedItem} onDelete={()=>onDelete(item.id)} />}
+        renderItem={({ item }) => <TodoItem item={item} onPress={() => markComplete(item.id)} setEditing={setEditing} setModalVisible={setModalVisible} setSelectedItem={setSelectedItem} onDelete={() => onDelete(item.id)} />}
         keyExtractor={(item) => item.id}
         ListFooterComponent={listFooter}
         contentContainerStyle={styles.listContainer}

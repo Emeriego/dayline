@@ -203,5 +203,21 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
+  topWrap: {
+    display: "flex",
+    width: "90%",
+    height: 10,
+    backgroundColor: "white",
+    borderRadius: 22,
+    paddingTop: 18,
+    paddingBottom: 18,
+    justifyContent: "space-between",
+    alignItems: "center",
+    // alignSelf: "right",
+    flexDirection: "row",
+
+
+
+  },
 
 });
