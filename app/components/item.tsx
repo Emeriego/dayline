@@ -54,7 +54,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ item, onPress, setEditing, setModal
 
 
     return (
-        <View style={[styles.itemContainer, item.priority === "1" ? {backgroundColor: "pink"} : (item.priority === "2" ? {backgroundColor: "orange"} : {backgroundColor: "yellow"})]}>
+        <View style={[styles.itemContainer, item.priority === "1" ? {backgroundColor: "pink"} : (item.priority === "2" ? {backgroundColor: "orange"} : {backgroundColor: "yellow"})]} className="bg-black">
             <TouchableOpacity
                 style={styles.itemTitle}
                 onPress={() => setShowDetails(prev => !prev)} // Toggle showDetails state independently for each item

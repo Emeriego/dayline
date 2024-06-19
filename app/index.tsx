@@ -145,8 +145,7 @@ const App: React.FC = () => {
     if (editing && selectedItem) {
       editingItem(selectedItem.id);
     }
-  }
-    , [selectedItem]);
+  }, [selectedItem]);
 
   return (
     <SafeAreaView style={styles.container} className="bg-blue-200">
@@ -157,7 +156,7 @@ const App: React.FC = () => {
           <View style={styles.modalView}>
             <View style={styles.topWrap}>
               <Text >Create a todo</Text>
-              <Pressable style={{cursor: "pointer"}} onPress={()=>setModalVisible(false)} >
+              <Pressable style={{ cursor: "pointer" }} onPress={() => setModalVisible(false)} >
                 <AntDesign name="close" size={18} color="red" />
               </Pressable>
             </View>
