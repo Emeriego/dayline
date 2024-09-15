@@ -6,13 +6,7 @@ import { styles } from "../styles";
 import {
     Text,
     View,
-    Alert,
-    Button,
-    FlatList,
-    TextInput,
-    SafeAreaView,
     TouchableOpacity,
-    Modal,
     Pressable,
 } from "react-native";
 
@@ -25,9 +19,6 @@ type TodoItemType = {
     priority: string;
 };
 
-
-
-// Define the type for the props of the TodoItem component
 type TodoItemProps = {
     item: TodoItemType;
     onPress: () => void;
@@ -37,8 +28,6 @@ type TodoItemProps = {
     onDelete: () => void;
 
 };
-
-
 
 const TodoItem: React.FC<TodoItemProps> = ({ item, onPress, setEditing, setModalVisible, setSelectedItem, onDelete }) => {
 
@@ -87,7 +76,13 @@ const TodoItem: React.FC<TodoItemProps> = ({ item, onPress, setEditing, setModal
                                     <FontAwesome6 name="circle" size={14} color="orange" />
                                 </Pressable>
                             )
-                            : <FontAwesome6 name="circle-check" size={14} color="green" />
+                            :(
+                                <Pressable style={styles.notCompleted} onPress={onPress}>
+                                <Text>Completed?</Text>
+                                <FontAwesome6 name="circle-check" size={14} color="green" />
+                            </Pressable>
+                            // <FontAwesome6 name="circle-check" size={14} color="green" />)
+                            )
                         }
                     </View>
                 </TouchableOpacity>

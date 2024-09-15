@@ -10,6 +10,7 @@ import Slider from '@react-native-community/slider';
 import TodoItem from "./components/item";
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -26,22 +27,23 @@ import {
   Pressable,
 } from "react-native";
 
-// Sample data
-const DATA: TodoItemType[] = [
-  { id: '1', title: "First Item firts gully fully", description: "first desc", completed: false, priority: "1" },
-  { id: '2', title: "Second Item", description: "second desc", completed: false, priority: "2" },
-  { id: '3', title: "Third Item", description: "third desc hjjk fkkdfjk fkhkshks dfkjkhfkd fkhfkhf fkhfkhkf fkhkfh fkhfk fh fkh kfdhfk dfkhf kf fkhfkhkfd fkhf khfkh fkhfdk kdfjhf ff dkj fkjkh fkj", completed: true, priority: "3" },
-];
 
-// Define the type for the props of the TodoItem component
+interface TodoItemType {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  priority: string;
+}
 const App: React.FC = () => {
-  const [items, setItems] = React.useState<TodoItemType[]>([]);
-  const [text, setText] = React.useState<string>("");
-  const [desc, setDesc] = React.useState<string>("");
-  const [priorityLevel, setPriorityLevel] = React.useState<string>("3");
-  const [editing, setEditing] = React.useState<boolean>(false);
-  const [modalVisible, setModalVisible] = React.useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = React.useState<TodoItemType | null>(null);
+  const [items, setItems] = useState<TodoItemType[]>([]);
+  const [text, setText] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [priorityLevel, setPriorityLevel] = useState<string>("3");
+  const [editing, setEditing] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<TodoItemType | null>(null);
+  const [showSearchBox, setShowSearchBox] = useState<string>(false);
 
 
   useEffect(() => {
@@ -53,6 +55,7 @@ const App: React.FC = () => {
       const jsonValue = await AsyncStorage.getItem('todos');
       if (jsonValue != null) {
         setItems(JSON.parse(jsonValue));
+        console.log('Loaded todos.', JSON.parse(jsonValue));
       }
     } catch (e) {
       console.error('Failed to load todos.', e);
@@ -74,7 +77,13 @@ const App: React.FC = () => {
     if (text) {
       const newItems = [
         ...items,
-        { id: (items.length + 1).toString(), title: text, description: desc, completed: false, priority: priorityLevel },
+        {
+          id: uuidv4(),
+          title: text,
+          description: desc,
+          completed: false,
+          priority: priorityLevel
+        },
       ];
       setItems(newItems);
       saveTodos(newItems);
@@ -104,6 +113,7 @@ const App: React.FC = () => {
     if (completedItem) {
       const updatedItems = [...items];
       updatedItems[items.indexOf(completedItem)] = { ...completedItem, completed: !completedItem.completed };
+      console.log(updatedItems[items.indexOf(completedItem)].completed);
       setItems(updatedItems);
     }
   };
@@ -190,6 +200,24 @@ const App: React.FC = () => {
           </View>
         </View>
       </Modal>
+      <View style={styles.headerCol}>
+        <View style={styles.headerRow}>
+          <View style={styles.left}>
+            <FontAwesome6 name="calendar-days" size={14} color="black" />
+            <Text style={styles.title}>Saturday, 14th</Text>
+          </View>
+
+          <View style={styles.searchBox}>
+            {showSearchBox && <TextInput style={styles.textInput} placeholder={"Search"} />}
+            <Pressable style={styles.searchIcon} onPress={() => setShowSearchBox(prev => !prev)}>
+              <FontAwesome6 name="magnifying-glass" size={19} color="black" />
+            </Pressable>
+          </View>
+        </View>
+        {/* <View style={styles.horizontalLine}></View> */}
+
+
+      </View>
       <FlatList
         style={styles.list}
         data={items}
