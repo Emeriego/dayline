@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "todo",
+    "name": "emerie-note",
     "slug": "todo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,18 +19,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.emeriego.todo"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       "expo-router"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8e744ca6-7304-44fd-8140-bd352a9b1425"
+      }
     }
   }
 }

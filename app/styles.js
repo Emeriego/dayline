@@ -250,35 +250,54 @@ left: {
   gap: 8,
 },
 searchBox: {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-end",
-  alignItems: "left",
-  width: "50%",
-  gap: 8,
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-end', // Align everything to the right
+  width: '50%',
   borderBottomColor: '#EFE4BE',
-  position: 'relative',
-  backgroundColor: 'white',
+  position: 'relative', // Important for icon positioning
+  height: 40,
+},
+animatedInputContainer: {
+  overflow: 'hidden', // Ensures the input is clipped when width is 0
 },
 searchInput: {
-  width: "100%",
   height: 40,
-  padding: 10,
-  borderBottomColor: '#EFE4BE',
+  paddingHorizontal: 10,
+  borderColor: '#EFE4BE',
   borderWidth: 1,
   borderRadius: 8,
   backgroundColor: 'white',
   color: 'black',
-  left: 0,
-  position: 'absolute',
-  right: 10,
-  top: 10,
-
 },
 searchIcon: {
   position: 'absolute',
-  right: 10,
-  top: 10,
+  right: 10, // Positioned inside the container
+  top: '50%',
+  transform: [{ translateY: '-50%' }], // Center it vertically
 },
+pagination: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: 10,
+  marginBottom: 20,
+},
+paginationButton: {
+  padding: 4,
+  backgroundColor: '#000',
+  borderRadius: 5,
+  margin: 4,
+},
+paginationButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+},
+pageInfo: {
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 
 });

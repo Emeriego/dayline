@@ -574,3 +574,11 @@ These methods will allow you to cache and play audio files efficiently, providin
 #### npx tailwind-rn init
 
 # show header options - to turn off header
+
+# to create an apk file of your mobile app.
+npm install -g eas-cli - this has already been installed.
+eas login
+eas build:configure
+eas build --platform android --profile production
+
+

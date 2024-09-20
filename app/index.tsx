@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import TodoItem from "./components/item";
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 
@@ -25,16 +26,19 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  Animated,
 } from "react-native";
 
 
-interface TodoItemType {
+type TodoItemType = {
   id: string;
   title: string;
-  description: string;
   completed: boolean;
+  description: string;
   priority: string;
-}
+  createdDate: string; // Add this field for the creation date
+};
+
 const App: React.FC = () => {
   const [items, setItems] = useState<TodoItemType[]>([]);
   const [text, setText] = useState<string>("");
@@ -44,9 +48,53 @@ const App: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<TodoItemType | null>(null);
   const [showSearchBox, setShowSearchBox] = useState<string>(false);
+  const inputWidth = useRef(new Animated.Value(0)).current; // Initial width is 0
+  const [searchQuery, setSearchQuery] = useState<string>(""); // New state for search query
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const ITEMS_PER_PAGE = 5;
 
+
+  const clearAsyncStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log("AsyncStorage cleared successfully.");
+    } catch (error) {
+      console.error("Failed to clear AsyncStorage:", error);
+    }
+  };
+  
+  
+  useEffect(() => {
+    const pages = Math.ceil(items.length / ITEMS_PER_PAGE);
+    setTotalPages(pages);
+  }, [items]);
+
+
+  const getPaginatedItems = () => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredItems.slice(startIndex, endIndex);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+    setSearchQuery("")
+    setShowSearchBox(false)
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+    setSearchQuery("")
+    setShowSearchBox(false)
+  };
 
   useEffect(() => {
+    // clearAsyncStorage();
     loadTodos();
   }, []);
 
@@ -82,7 +130,8 @@ const App: React.FC = () => {
           title: text,
           description: desc,
           completed: false,
-          priority: priorityLevel
+          priority: priorityLevel,
+          createdDate: new Date().toISOString(), // Add createdDate using ISO string
         },
       ];
       setItems(newItems);
@@ -90,12 +139,16 @@ const App: React.FC = () => {
       setText("");
     }
     setModalVisible(false);
-  }
+    setSearchQuery("")
+    setShowSearchBox(false)
+  };
+  
   const editItem = (id: string) => {
     const itemToEdit = items.find((item) => item.id === id);
     if (itemToEdit) {
       const updatedItems = [...items];
-      updatedItems[items.indexOf(itemToEdit)] = { id: id, title: text, description: desc, completed: itemToEdit.completed, priority: priorityLevel },
+      updatedItems[items.indexOf(itemToEdit)] = { id: id, title: text, description: desc, completed: itemToEdit.completed, priority: priorityLevel, createdDate: itemToEdit.createdDate,
+    },
 
         setItems(updatedItems);
       saveTodos(updatedItems);
@@ -157,6 +210,29 @@ const App: React.FC = () => {
     }
   }, [selectedItem]);
 
+  const toggleSearchBox = () => {
+    setShowSearchBox(prev => !prev);
+    setSearchQuery("")
+    // Animate the width when toggling
+    Animated.timing(inputWidth, {
+      toValue: showSearchBox ? 0 : 200, // Expand to 200 (you can adjust) or collapse to 0
+      duration: 100, // Duration of the animation
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handleBlur = () => {
+    setShowSearchBox(false);
+    Animated.timing(inputWidth, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+  const filteredItems = items.filter((item) => {
+    return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.priority === searchQuery;
+  });
   return (
     <SafeAreaView style={styles.container} className="bg-blue-200">
       <StatusBar style="auto" />
@@ -208,24 +284,56 @@ const App: React.FC = () => {
           </View>
 
           <View style={styles.searchBox}>
-            {showSearchBox && <TextInput style={styles.textInput} placeholder={"Search"} />}
-            <Pressable style={styles.searchIcon} onPress={() => setShowSearchBox(prev => !prev)}>
+            <Animated.View style={[styles.animatedInputContainer, { width: inputWidth }]}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                />
+            </Animated.View>
+
+            <Pressable style={styles.searchIcon} onPress={toggleSearchBox}>
               <FontAwesome6 name="magnifying-glass" size={19} color="black" />
             </Pressable>
           </View>
         </View>
-        {/* <View style={styles.horizontalLine}></View> */}
-
 
       </View>
       <FlatList
         style={styles.list}
-        data={items}
-        renderItem={({ item }) => <TodoItem item={item} onPress={() => markComplete(item.id)} setEditing={setEditing} setModalVisible={setModalVisible} setSelectedItem={setSelectedItem} onDelete={() => onDelete(item.id)} />}
+        // data={filteredItems}
+        data={getPaginatedItems()}
+        renderItem={({ item }) => <TodoItem item={item} onPress={() => markComplete(item.id)} setEditing={setEditing} editing={editing} setModalVisible={setModalVisible} setSelectedItem={setSelectedItem} onDelete={() => onDelete(item.id)} />}
         keyExtractor={(item) => item.id}
         ListFooterComponent={listFooter}
         contentContainerStyle={styles.listContainer}
       />
+      <View style={styles.pagination}>
+        <TouchableOpacity
+          style={styles.paginationButton}
+          onPress={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          {/* <Text style={styles.paginationButtonText}>Previous</Text> */}
+          <FontAwesome6 name="arrow-left" size={14} color="white" />
+
+        </TouchableOpacity>
+
+        <Text style={styles.pageInfo}>
+          {currentPage} of {totalPages}
+        </Text>
+
+        <TouchableOpacity
+          style={styles.paginationButton}
+          onPress={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          {/* <Text style={styles.paginationButtonText}>Next</Text> */}
+          <FontAwesome6 name="arrow-right" size={14} color="white" />
+
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
